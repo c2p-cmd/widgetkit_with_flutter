@@ -24,7 +24,7 @@ struct MyEntry : TimelineEntry {
 
 struct Model : Decodable {
     var title: String
-    var image: String
+    var thumbnail: String
 }
 
 class IdeaProvider {
@@ -45,18 +45,18 @@ class IdeaProvider {
             return
         }
 
-        var ideaOfToday: Model
+        var apiData: Model
         do {
-            ideaOfToday = try JSONDecoder().decode(Model.self, from: content)
+            apiData = try JSONDecoder().decode(Model.self, from: content)
         } catch {
             completion?(ApiResponse.Failure, "")
             return
         }
         
-        let url = URL(string: ideaOfToday.image)!
+        let url = URL(string: apiData.thumbnail)!
         let urlRequest = URLRequest(url: url)
         let task = URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, error in
-            imageFromResponse(title: ideaOfToday.title, data: data, urlResponse: urlResponse, error: error, completion: completion)
+            imageFromResponse(title: apiData.title, data: data, urlResponse: urlResponse, error: error, completion: completion)
         }
         task.resume()
     }
